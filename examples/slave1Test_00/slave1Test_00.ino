@@ -36,14 +36,14 @@ byte release = 1;
 byte G1b0_pin 		  = 2;
 byte G1b1_pin		  = 4;
 byte G1b2_pin 		  = 5;
-byte G1VrefPwm_pin    = 3;
 byte G2b0_pin 		  = 6;
 byte G2b1_pin 		  = 7;
 byte G2b2_pin 		  = 8;
+byte G1VrefPwm_pin    = 3;
 byte G2VrefPwm_pin	  = 9;
 byte G1G2_VHpwm_pin   = 10;
 byte G1G2_VLpwm_pin   = 11;
-byte LD1_pin		  = 13;
+byte LD6_pin		  = 13;
 
 
 // connessioni hardware analogiche
@@ -100,120 +100,73 @@ const byte  K_VrefMon        = 24;
 void setup() {
 	delay(500);
 	for(byte i=1; i<=release; i++) {
-		digitalWrite(LD1_pin, HIGH);
+		digitalWrite(LD6_pin, HIGH);
 		delay(100);
-		digitalWrite(LD1_pin, LOW);
+		digitalWrite(LD6_pin, LOW);
 		delay(500);
 	}
-	pinMode(G1b0_pin,      OUTPUT);
-	pinMode(G1b1_pin, 	   OUTPUT);
-	pinMode(G1b2_pin, 	   OUTPUT);
-	pinMode(G2b0_pin, 	   OUTPUT);
-	pinMode(G2b1_pin, 	   OUTPUT);
-	pinMode(G2b2_pin, 	   OUTPUT);
-	pinMode(G1VrefPwm_pin, OUTPUT);
-	pinMode(G2VrefPwm_pin, OUTPUT);
+	pinMode(G1b0_pin,       OUTPUT);
+	pinMode(G1b1_pin, 	    OUTPUT);
+	pinMode(G1b2_pin, 	    OUTPUT);
+	pinMode(G2b0_pin, 	    OUTPUT);
+	pinMode(G2b1_pin, 	    OUTPUT);
+	pinMode(G2b2_pin, 	    OUTPUT);
+	pinMode(G1VrefPwm_pin,  OUTPUT);
+	pinMode(G2VrefPwm_pin,  OUTPUT);
+	pinMode(G1G2_VHpwm_pin, OUTPUT);
+	pinMode(G1G2_VHpwm_pin, OUTPUT);
 
-	setPwmFrequency(G1VrefPwm_pin, 1);
-	setPwmFrequency(G2VrefPwm_pin, 1);
-	setPwmFrequency(G1G2_VHpwm_pin, 1);		// D3 imposta la freq. del PWM a 31250Hz
-	setPwmFrequency(G1G2_VLpwm_pin, 1);	    // D5 imposta la freq. del PWM a 62500Hz - DA EVITARE!!!!
+	setPwmFrequency(G1VrefPwm_pin, 1);		// D3 imposta la freq. del PWM a 31250Hz
+	setPwmFrequency(G2VrefPwm_pin, 1);		// D9 imposta la freq. del PWM a 31250Hz
+	setPwmFrequency(G1G2_VHpwm_pin, 1);		// D10 imposta la freq. del PWM a 31250Hz
+	setPwmFrequency(G1G2_VLpwm_pin, 1);	    // D11 imposta la freq. del PWM a 31250Hz
 
 
 // setup per primo test della card - sarà sostituito con la lettura della EEPROM
-	Zload_50ohm = false;  // FORSE A BASSO LIVELLO NON SERVE
-	SHDNcodeOld  = 3;		// "0" tutti spenti "3" tutti accesi!
-	G1_Vos    = 400;     //(G1VrefPwm_pin) deve essere in mV (max 2000)e serve per il calcolo di Vref=G1_Vos/(1+PGAgain) dipende da Zload_50ohm
-	G2_Vos    = 400;	  //(G2VrefPwm_pin)
-	VclampPos = 4800;	  // max=7900mV - valore in mV della tensione di limitazione
-	VclampNeg = 4800;	  // max=8000mV
-	G1codeOld    = 4;   // G1 @ 50 ohm = 0.913
-	G2codeOld    = 2;   // G2 @ 50 ohm = 0.457
+	// Zload_50ohm = false;  // FORSE A BASSO LIVELLO NON SERVE
+	// SHDNcodeOld  = 3;		// "0" tutti spenti "3" tutti accesi!
+	// G1_Vos    = 400;     //(G1VrefPwm_pin) deve essere in mV (max 2000)e serve per il calcolo di Vref=G1_Vos/(1+PGAgain) dipende da Zload_50ohm
+	// G2_Vos    = 400;	  //(G2VrefPwm_pin)
+	// VclampPos = 4800;	  // max=7900mV - valore in mV della tensione di limitazione
+	// VclampNeg = 4800;	  // max=8000mV
+	// G1codeOld    = 4;   // G1 @ 50 ohm = 0.913
+	// G2codeOld    = 2;   // G2 @ 50 ohm = 0.457
 
 // richiama l'ultima configurazione
-	SHDNcodeOld       = EEPROM.read(SHDNcode_addr);
-	G1_VrefCodeOld    = EEPROM.read(G1_VrefCode_addr);
-	G2_VrefCodeOld    = EEPROM.read(G2_VrefCode_addr);
-	VclampPos_codeOld = EEPROM.read(VclampPos_code_addr);
-	VclampNeg_codeOld = EEPROM.read(VclampNeg_code_addr);
-	G1codeOld         = EEPROM.read(G1code_addr);
-	G2codeOld         = EEPROM.read(G2code_addr);
+	// SHDNcodeOld       = EEPROM.read(SHDNcode_addr);
+	// G1_VrefCodeOld    = EEPROM.read(G1_VrefCode_addr);
+	// G2_VrefCodeOld    = EEPROM.read(G2_VrefCode_addr);
+	// VclampPos_codeOld = EEPROM.read(VclampPos_code_addr);
+	// VclampNeg_codeOld = EEPROM.read(VclampNeg_code_addr);
+	// G1codeOld         = EEPROM.read(G1code_addr);
+	// G2codeOld         = EEPROM.read(G2code_addr);
 
-	VclampPos = VclampPos_code * K_VclampPosSetup;
-	VclampNeg = VclampNeg_code * K_VclampNegSet;
+	// VclampPos = VclampPos_code * K_VclampPosSetup;
+	// VclampNeg = VclampNeg_code * K_VclampNegSet;
 	// G1_Vos =
 	// G2_Vos =
 
 
 // è importante la SEQUENZA per la prima impostazione!!
-	VclampPosSetup (VclampPos);
-	VclampNegSet   (VclampNeg);
-	G1gainSetup    (G1codeOld);         // aggiorna anche Vref!!
-	G2gainSetup    (G2codeOld);
-	SHDNsetUp      (SHDNcodeOld);
+	// VclampPosSetup (VclampPos);
+	// VclampNegSet   (VclampNeg);
+	// G1gainSetup    (G1codeOld);         // aggiorna anche Vref!!
+	// G2gainSetup    (G2codeOld);
+	// SHDNsetUp      (SHDNcodeOld);
 
 	// VmonPos = (analogRead(VmonPos_pin))*K_VmonPos;
 	// VmonNeg = (analogRead(VmonNeg_pin))*K_VmonNeg;
 	// Vref = (analogRead(G1Vref_pin))*K_VrefMon;
 
+
+	G1gainSetup(0);
+	G2gainSetup(0);
+
+
 }
 
 void loop() {
-  serialEvent();
-  if (stringComplete == true) {
-  // comandi di scrittura (prevedono il quarto byte))
-	// *W1
-	if (command[0] == 0x2A && command[1] == 0x57 && command[2] == 0x31) {
-      G1gainSetup(command[3]);
-	  stringComplete = false;
-	}
-	// *W2
-	if (command[0] == 0x2A && command[1] == 0x57 && command[2] == 0x32) {
-      G2gainSetup(command[3]);
-	  stringComplete = false;
-	}
-	// *W3
-	if (command[0] == 0x2A && command[1] == 0x57 && command[2] == 0x33) {
-      VclampPos = command[3]*K_VclampPosSetup;
-	  VclampPosSetup(VclampPos);
-	  stringComplete = false;
-	}
-	// *W4
-	if (command[0] == 0x2A && command[1] == 0x57 && command[2] == 0x34) {
-      VclampNeg = command[3]*K_VclampNegSet;
-	  VclampNegSet(VclampNeg);
-	  stringComplete = false;
-	}
-	// *W5
-	if (command[0] == 0x2A && command[1] == 0x57 && command[2] == 0x35) {
-      G1_Vos = command[3]*12;   // VosMax = 255*12 = 3060 @ HZ
-	  G1_VosSetup(G1_Vos);
-	  stringComplete = false;
-	}
-	// *W6
-	if (command[0] == 0x2A && command[1] == 0x57 && command[2] == 0x36) {
-      G2_Vos = command[3]*12;
-	  G2_VosSetup(G2_Vos);
-	  stringComplete = false;
-	}
 
-	// *W7
-	if (command[0] == 0x2A && command[1] == 0x57 && command[2] == 0x37) {
-      SHDNcodeNew = command[3];
-	  SHDNsetUp(SHDNcodeNew);
-	  stringComplete = false;
-	}
-    // if (command[0] == 0x2A && command[1] == 0x57 && command[2] == 0x33) {
-      // setVref();
-    // }
-    // // comandi di lettura
-    // if (command[0] == 0x2A && command[1] == 0x52 && command[2] == 0x37) {
-      // readVref();
-    // }
-    // if (command[0] == 0x2A && command[1] == 0x52 && command[2] == 0x38) {
-      // readVclampPos();
-    // }
-  }
 }
 
 
@@ -253,86 +206,57 @@ void setPwmFrequency(int pin, int divisor) {
 
 
 // funzioni di SCRITTURA
-void SHDNsetUp(byte SHDNcode) {
-	switch (SHDNcode) {
-		case 0:
-			digitalWrite(SHDN1_pin, HIGH);  // il THS7001 si "accende" quando il senale è LOW
-			digitalWrite(SHDN2_pin, HIGH);      // sostituisci con funzione tipo G1gainSetup()
-			break;
-		case 1:
-			digitalWrite(SHDN1_pin, LOW);  // il THS7001 si "accende" quando il senale è LOW
-			digitalWrite(SHDN2_pin, HIGH);      // sostituisci con funzione tipo G1gainSetup()
-			break;
-		case 2:
-			digitalWrite(SHDN1_pin, HIGH);  // il THS7001 si "accende" quando il senale è LOW
-			digitalWrite(SHDN2_pin, LOW);      // sostituisci con funzione tipo G1gainSetup()
-			break;
-		case 3:
-			digitalWrite(SHDN1_pin, LOW);  // il THS7001 si "accende" quando il senale è LOW
-			digitalWrite(SHDN2_pin, LOW);      // sostituisci con funzione tipo G1gainSetup()
-			break;
-		default:
-			digitalWrite(SHDN1_pin, HIGH);  // il THS7001 si "accende" quando il senale è LOW
-			digitalWrite(SHDN2_pin, HIGH);      // sostituisci con funzione tipo G1gainSetup()
-	}
-	if(SHDWcodeNew != SHDNcodeOld) {
-		EEPROM.write(SHDNcode_addr, SHDNcode);
-		Serial.print("memorizzazione di SHDNcode = ");
-		Serial.println(SHDNcode);
-	}
-}
-
 
 void G1gainSetup(byte G1code) {
 	switch (G1code) {
 		case 0:
 			G1_PGAgain = 0.08;  // serve per il calcolo di G1_Vref=G1_Vos/(1+G1_PGAgain)
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, LOW); digitalWrite(G1b1_pin, LOW); digitalWrite(G1b0_pin, LOW);
 			break;
 		case 1:
 			G1_PGAgain = 0.16;
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, LOW); digitalWrite(G1b1_pin, LOW); digitalWrite(G1b0_pin, HIGH);
 			break;
 		case 2:
 			G1_PGAgain = 0.32;
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, LOW); digitalWrite(G1b1_pin, HIGH); digitalWrite(G1b0_pin, LOW);
 			break;
 		case 3:
 			G1_PGAgain = 0.63;
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, LOW); digitalWrite(G1b1_pin, HIGH); digitalWrite(G1b0_pin, HIGH);
 			break;
 		case 4:
 			G1_PGAgain = 1.26;
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, HIGH); digitalWrite(G1b1_pin, LOW); digitalWrite(G1b0_pin, LOW);
 			break;
 		case 5:
 			G1_PGAgain = 2.52;  // gain totale = 2 ad 1Mohm
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, HIGH); digitalWrite(G1b1_pin, LOW); digitalWrite(G1b0_pin, HIGH);
 			break;
 		case 6:
 			G1_PGAgain = 5.01;
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, HIGH); digitalWrite(G1b1_pin, HIGH); digitalWrite(G1b0_pin, LOW);
 			break;
 		case 7:
 			G1_PGAgain = 10;
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, HIGH); digitalWrite(G1b1_pin, HIGH); digitalWrite(G1b0_pin, HIGH);
 			break;
 		default:
 			G1_PGAgain = 0.08;
-			G1_VosSetup(G1_Vos);
+			// G1_VosSetup(G1_Vos);
 			digitalWrite(G1b2_pin, LOW); digitalWrite(G1b1_pin, LOW); digitalWrite(G1b0_pin, LOW);
 	}
-	EEPROM.write(G1code_addr, G1code);
-	Serial.print("memorizzazione di G1code = ");
-	Serial.println(G1code);
+	// EEPROM.write(G1code_addr, G1code);
+	// Serial.print("memorizzazione di G1code = ");
+	// Serial.println(G1code);
 }
 
 
@@ -340,120 +264,120 @@ void G2gainSetup(byte G2code) {
 	switch (G2code) {
 		case 0:
 			G2_PGAgain = 0.08;  // serve per il calcolo di Vref=G1_Vos/(1+G2_PGAgain)
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, LOW);
 			break;
 		case 1:
 			G2_PGAgain = 0.16;
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, HIGH);
 			break;
 		case 2:
 			G2_PGAgain = 0.32;
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, HIGH); digitalWrite(G2b0_pin, LOW);
 			break;
 		case 3:
 			G2_PGAgain = 0.63;
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, HIGH); digitalWrite(G2b0_pin, HIGH);
 			break;
 		case 4:
 			G2_PGAgain = 1.26;
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, HIGH); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, LOW);
 			break;
 		case 5:
 			G2_PGAgain = 2.52;
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, HIGH); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, HIGH);
 			break;
 		case 6:
 			G2_PGAgain = 5.01;
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, HIGH); digitalWrite(G2b1_pin, HIGH); digitalWrite(G2b0_pin, LOW);
 			break;
 		case 7:
 			G2_PGAgain = 10;
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, HIGH); digitalWrite(G2b1_pin, HIGH); digitalWrite(G2b0_pin, HIGH);
 			break;
 		default:
 			G2_PGAgain = 0.08;
-			G2_VosSetup(G2_Vos);
+			// G2_VosSetup(G2_Vos);
 			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, LOW);
 	}
-	EEPROM.write(G2code_addr, G2code);
-	Serial.print("memorizzazione di G2code = ");
-	Serial.println(G2code);
+	// EEPROM.write(G2code_addr, G2code);
+	// Serial.print("memorizzazione di G2code = ");
+	// Serial.println(G2code);
 }
 
 
-void G1_VosSetup(float G1_Vos) {
-	G1_Vref = G1_Vos/(1+G1_PGAgain);
-	G1_VrefCode = G1_Vref/K_VrefSet;
-	analogWrite(G1VrefPwm_pin, G1_VrefCode);
-	EEPROM.write(G1_VrefCode_addr, G1_VrefCode);
-	Serial.print ("memorizzazione di G1_VrefCode = ");
-	Serial.println(G1_VrefCode);
-}
+// void G1_VosSetup(float G1_Vos) {
+	// G1_Vref = G1_Vos/(1+G1_PGAgain);
+	// G1_VrefCode = G1_Vref/K_VrefSet;
+	// analogWrite(G1VrefPwm_pin, G1_VrefCode);
+	// EEPROM.write(G1_VrefCode_addr, G1_VrefCode);
+	// Serial.print ("memorizzazione di G1_VrefCode = ");
+	// Serial.println(G1_VrefCode);
+// }
 
 
-void G2_VosSetup(float G2_Vos) {
-	G2_Vref = G2_Vos/(1+G2_PGAgain);
-	G2_VrefCode = G2_Vref/K_VrefSet;
-	analogWrite(G2VrefPwm_pin, G2_VrefCode);
-	EEPROM.write(G2_VrefCode_addr, G2_VrefCode);
-	Serial.print ("memorizzazione di G2_VrefCode = ");
-	Serial.println(G1_VrefCode);
-}
+// void G2_VosSetup(float G2_Vos) {
+	// G2_Vref = G2_Vos/(1+G2_PGAgain);
+	// G2_VrefCode = G2_Vref/K_VrefSet;
+	// analogWrite(G2VrefPwm_pin, G2_VrefCode);
+	// EEPROM.write(G2_VrefCode_addr, G2_VrefCode);
+	// Serial.print ("memorizzazione di G2_VrefCode = ");
+	// Serial.println(G1_VrefCode);
+// }
 
 
-void VclampPosSetup(unsigned int VclampPos) {
-	VclampPos_codeNew = VclampPos/K_VclampPosSetup;
-	analogWrite(VclampPosPwm_pin, VclampPos_code);
-	EEPROM.write(VclampPos_code_addr, VclampPos_codeNew);
-	Serial.print ("memorizzazione di VclampPos_code = ");
-	Serial.println(VclampPos_code);
-}
+// void VclampPosSetup(unsigned int VclampPos) {
+	// VclampPos_codeNew = VclampPos/K_VclampPosSetup;
+	// analogWrite(VclampPosPwm_pin, VclampPos_code);
+	// EEPROM.write(VclampPos_code_addr, VclampPos_codeNew);
+	// Serial.print ("memorizzazione di VclampPos_code = ");
+	// Serial.println(VclampPos_code);
+// }
 
 
-void VclampNegSet(unsigned int VclampNeg) {
-	VclampNeg_code = VclampNeg/K_VclampNegSet;
-	analogWrite(VclampNegPwm_pin, VclampNeg_code);
-	EEPROM.write(VclampNeg_code_addr, VclampNeg_code);
-	Serial.print ("memorizzazione di VclampNeg_code = ");
-	Serial.println(VclampNeg_code);
-}
+// void VclampNegSet(unsigned int VclampNeg) {
+	// VclampNeg_code = VclampNeg/K_VclampNegSet;
+	// analogWrite(VclampNegPwm_pin, VclampNeg_code);
+	// EEPROM.write(VclampNeg_code_addr, VclampNeg_code);
+	// Serial.print ("memorizzazione di VclampNeg_code = ");
+	// Serial.println(VclampNeg_code);
+// }
 
 
 
 
 //  funzioni per la comunicazione
 
-void serialEvent() {
-	if (Serial.available() > 0) {
-		command[0] = Serial.read();
-		Serial.print(command[0], HEX);
-		Serial.print(" ");
-		delay(5);
-		command[1] = Serial.read();
-		Serial.print(command[1], HEX);
-		Serial.print(" ");
-		delay(5);
-		command[2] = Serial.read();
-		Serial.print(command[2], HEX);
-		Serial.print(" ");
-		delay(5);
-		if (command[1] == 0x57) {
-			command[3] = Serial.read();
-			Serial.print(command[3], HEX);
-			delay(5);
-		}
-		Serial.println();
-		stringComplete = true;
-	}
-}
+// void serialEvent() {
+	// if (Serial.available() > 0) {
+		// command[0] = Serial.read();
+		// Serial.print(command[0], HEX);
+		// Serial.print(" ");
+		// delay(5);
+		// command[1] = Serial.read();
+		// Serial.print(command[1], HEX);
+		// Serial.print(" ");
+		// delay(5);
+		// command[2] = Serial.read();
+		// Serial.print(command[2], HEX);
+		// Serial.print(" ");
+		// delay(5);
+		// if (command[1] == 0x57) {
+			// command[3] = Serial.read();
+			// Serial.print(command[3], HEX);
+			// delay(5);
+		// }
+		// Serial.println();
+		// stringComplete = true;
+	// }
+// }
 
 // funzioni di SCRITTURA
 // void setShdn() {
