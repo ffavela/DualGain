@@ -98,13 +98,6 @@ const byte  K_VrefMon        = 24;
 
 
 void setup() {
-	delay(500);
-	for(byte i=1; i<=release; i++) {
-		digitalWrite(LD6_pin, HIGH);
-		delay(100);
-		digitalWrite(LD6_pin, LOW);
-		delay(500);
-	}
 	pinMode(G1b0_pin,       OUTPUT);
 	pinMode(G1b1_pin, 	    OUTPUT);
 	pinMode(G1b2_pin, 	    OUTPUT);
@@ -115,12 +108,29 @@ void setup() {
 	pinMode(G2VrefPwm_pin,  OUTPUT);
 	pinMode(G1G2_VHpwm_pin, OUTPUT);
 	pinMode(G1G2_VHpwm_pin, OUTPUT);
+	pinMode(LD6_pin,		OUTPUT);
 
 	setPwmFrequency(G1VrefPwm_pin, 1);		// D3 imposta la freq. del PWM a 31250Hz
 	setPwmFrequency(G2VrefPwm_pin, 1);		// D9 imposta la freq. del PWM a 31250Hz
 	setPwmFrequency(G1G2_VHpwm_pin, 1);		// D10 imposta la freq. del PWM a 31250Hz
 	setPwmFrequency(G1G2_VLpwm_pin, 1);	    // D11 imposta la freq. del PWM a 31250Hz
 
+	delay(500);
+	for(byte i=1; i<=release; i++) {
+		digitalWrite(LD6_pin, HIGH);
+		delay(100);
+		digitalWrite(LD6_pin, LOW);
+		delay(500);
+	}
+
+
+	G1gainSetup(0);
+	G2gainSetup(0);
+
+	analogWrite(G1VrefPwm_pin,  20);
+	analogWrite(G2VrefPwm_pin,  20);
+	analogWrite(G1G2_VHpwm_pin, 20);
+	analogWrite(G1G2_VLpwm_pin, 20);
 
 // setup per primo test della card - sarà sostituito con la lettura della EEPROM
 	// Zload_50ohm = false;  // FORSE A BASSO LIVELLO NON SERVE
@@ -159,13 +169,16 @@ void setup() {
 	// Vref = (analogRead(G1Vref_pin))*K_VrefMon;
 
 
-	G1gainSetup(0);
-	G2gainSetup(0);
-
-
 }
 
 void loop() {
+
+	if (analogRead(temp1_pin) > 197) {
+		digitalWrite(LD6_pin, HIGH);
+		} else {
+		digitalWrite(LD6_pin, LOW);
+		}
+	delay(5);
 
 }
 
