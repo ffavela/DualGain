@@ -38,7 +38,7 @@ void myAwesomeWrite(int ledPin, int awesomeValue){
   }
 }
 
-
+// sull pin imposta la freq. del PWM a 31250Hz
 void setPwmFrequency(int pin, int divisor) {
 	byte mode;
 	if(pin == 5 || pin == 6 || pin == 9 || pin == 10) {
