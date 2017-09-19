@@ -76,6 +76,21 @@ void setPwmFrequency(int pin, int divisor) {
 
 // funzioni di SCRITTURA
 void G1gainSetup(byte G1code) {
+  float G1_PGAgain     = 0;
+
+  byte G1b0_pin 		  = 2;
+  byte G1b1_pin		  = 4;
+  byte G1b2_pin 		  = 5;
+  byte G2b0_pin 		  = 6;
+  byte G2b1_pin 		  = 7;
+  byte G2b2_pin 		  = 8;
+  byte G1VrefPwm_pin    = 3;
+  byte G2VrefPwm_pin	  = 9;
+  byte G1G2_VHpwm_pin   = 10;
+  byte G1G2_VLpwm_pin   = 11;
+  byte LD6_pin		  = 13;
+
+
 	switch (G1code) {
 		case 0:
 			G1_PGAgain = 0.08;  // serve per il calcolo di G1_Vref=G1_Vos/(1+G1_PGAgain)
@@ -129,6 +144,20 @@ void G1gainSetup(byte G1code) {
 
 
 void G2gainSetup(byte G2code) {
+  float G2_PGAgain;
+
+  byte G1b0_pin 		  = 2;
+  byte G1b1_pin		  = 4;
+  byte G1b2_pin 		  = 5;
+  byte G2b0_pin 		  = 6;
+  byte G2b1_pin 		  = 7;
+  byte G2b2_pin 		  = 8;
+  byte G1VrefPwm_pin    = 3;
+  byte G2VrefPwm_pin	  = 9;
+  byte G1G2_VHpwm_pin   = 10;
+  byte G1G2_VLpwm_pin   = 11;
+  byte LD6_pin		  = 13;
+
 	switch (G2code) {
 		case 0:
 			G2_PGAgain = 0.08;  // serve per il calcolo di Vref=G1_Vos/(1+G2_PGAgain)
@@ -181,77 +210,77 @@ void G2gainSetup(byte G2code) {
 }
 
 
-void G1_VosSetup(float G1_Vos) {
-	G1_Vref = G1_Vos/(1+G1_PGAgain);
-	G1_VrefCode = G1_Vref/K_VrefSet;
-	analogWrite(G1VrefPwm_pin, G1_VrefCode);
-	EEPROM.write(G1_VrefCode_addr, G1_VrefCode);
-	Serial.print ("memorizzazione di G1_VrefCode = ");
-	Serial.println(G1_VrefCode);
-}
+// void G1_VosSetup(float G1_Vos) {
+// 	G1_Vref = G1_Vos/(1+G1_PGAgain);
+// 	G1_VrefCode = G1_Vref/K_VrefSet;
+// 	analogWrite(G1VrefPwm_pin, G1_VrefCode);
+// 	EEPROM.write(G1_VrefCode_addr, G1_VrefCode);
+// 	Serial.print ("memorizzazione di G1_VrefCode = ");
+// 	Serial.println(G1_VrefCode);
+// }
 
 
-void G2_VosSetup(float G2_Vos) {
-	G2_Vref = G2_Vos/(1+G2_PGAgain);
-	G2_VrefCode = G2_Vref/K_VrefSet;
-	analogWrite(G2VrefPwm_pin, G2_VrefCode);
-	EEPROM.write(G2_VrefCode_addr, G2_VrefCode);
-	Serial.print ("memorizzazione di G2_VrefCode = ");
-	Serial.println(G1_VrefCode);
-}
+// void G2_VosSetup(float G2_Vos) {
+// 	G2_Vref = G2_Vos/(1+G2_PGAgain);
+// 	G2_VrefCode = G2_Vref/K_VrefSet;
+// 	analogWrite(G2VrefPwm_pin, G2_VrefCode);
+// 	EEPROM.write(G2_VrefCode_addr, G2_VrefCode);
+// 	Serial.print ("memorizzazione di G2_VrefCode = ");
+// 	Serial.println(G1_VrefCode);
+// }
 
 
-void VclampPosSetup(unsigned int VclampPos) {
-	VclampPos_codeNew = VclampPos/K_VclampPosSetup;
-	analogWrite(VclampPosPwm_pin, VclampPos_code);
-	EEPROM.write(VclampPos_code_addr, VclampPos_codeNew);
-	Serial.print ("memorizzazione di VclampPos_code = ");
-	Serial.println(VclampPos_code);
-}
+// void VclampPosSetup(unsigned int VclampPos) {
+// 	VclampPos_codeNew = VclampPos/K_VclampPosSetup;
+// 	analogWrite(VclampPosPwm_pin, VclampPos_code);
+// 	EEPROM.write(VclampPos_code_addr, VclampPos_codeNew);
+// 	Serial.print ("memorizzazione di VclampPos_code = ");
+// 	Serial.println(VclampPos_code);
+// }
 
 
-void VclampNegSet(unsigned int VclampNeg) {
-	VclampNeg_code = VclampNeg/K_VclampNegSet;
-	analogWrite(VclampNegPwm_pin, VclampNeg_code);
-	EEPROM.write(VclampNeg_code_addr, VclampNeg_code);
-	Serial.print ("memorizzazione di VclampNeg_code = ");
-	Serial.println(VclampNeg_code);
-}
+// void VclampNegSet(unsigned int VclampNeg) {
+// 	VclampNeg_code = VclampNeg/K_VclampNegSet;
+// 	analogWrite(VclampNegPwm_pin, VclampNeg_code);
+// 	EEPROM.write(VclampNeg_code_addr, VclampNeg_code);
+// 	Serial.print ("memorizzazione di VclampNeg_code = ");
+// 	Serial.println(VclampNeg_code);
+// }
 
 
 //funzioni per la comunicazione
-void serialEvent() {
-	if (Serial.available() > 0) {
-		command[0] = Serial.read();
-		Serial.print(command[0], HEX);
-		Serial.print(" ");
-		delay(5);
-		command[1] = Serial.read();
-		Serial.print(command[1], HEX);
-		Serial.print(" ");
-		delay(5);
-		command[2] = Serial.read();
-		Serial.print(command[2], HEX);
-		Serial.print(" ");
-		delay(5);
-		if (command[1] == 0x57) {
-			command[3] = Serial.read();
-			Serial.print(command[3], HEX);
-			delay(5);
-		}
-		Serial.println();
-		stringComplete = true;
-	}
-}
+// void serialEvent() {
+// 	if (Serial.available() > 0) {
+// 		command[0] = Serial.read();
+// 		Serial.print(command[0], HEX);
+// 		Serial.print(" ");
+// 		delay(5);
+// 		command[1] = Serial.read();
+// 		Serial.print(command[1], HEX);
+// 		Serial.print(" ");
+// 		delay(5);
+// 		command[2] = Serial.read();
+// 		Serial.print(command[2], HEX);
+// 		Serial.print(" ");
+// 		delay(5);
+// 		if (command[1] == 0x57) {
+// 			command[3] = Serial.read();
+// 			Serial.print(command[3], HEX);
+// 			delay(5);
+// 		}
+// 		Serial.println();
+// 		stringComplete = true;
+// 	}
+// }
 
 // funzioni di SCRITTURA
-void setShdn() {
-  Serial.println("comando_scrittura_1: in esecuzione");
-	if      (command[3] == 0x30) {digitalWrite(serviceLed, LOW);}
-	else if (command[3] == 0x31) {digitalWrite(serviceLed, HIGH);}
-	else if (command[3] == 0x32) {digitalWrite(shutDW1_pin, LOW);}
-	else if (command[3] == 0x33) {digitalWrite(shutDW1_pin, HIGH);}
-	else {Serial.println("comando_scrittura_1: invalid data");}
-	stringComplete = false;
-	Serial.println();
-}
+// void setShdn() {
+//   Serial.println("comando_scrittura_1: in esecuzione");
+// 	if      (command[3] == 0x30) {digitalWrite(serviceLed, LOW);}
+// 	else if (command[3] == 0x31) {digitalWrite(serviceLed, HIGH);}
+// 	else if (command[3] == 0x32) {digitalWrite(shutDW1_pin, LOW);}
+// 	else if (command[3] == 0x33) {digitalWrite(shutDW1_pin, HIGH);}
+// 	else {Serial.println("comando_scrittura_1: invalid data");}
+// 	stringComplete = false;
+// 	Serial.println();
+// }

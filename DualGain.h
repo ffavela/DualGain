@@ -6,7 +6,10 @@
 #define DualGain_h
 
 #include "Arduino.h"
+#include <EEPROM.h>
 #include<math.h>
+
+
 
 int myAwesomeFunction(int);
 int myAwesomeFunction2(int,int);
