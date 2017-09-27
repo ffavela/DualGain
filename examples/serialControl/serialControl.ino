@@ -27,6 +27,8 @@ SoftwareSerial RS485Serial(SSerialRX, SSerialTX); // RX, TX
 /*-----( Declare Variables )-----*/
 int byteReceived;
 int byteSend;
+boolean stringComplete = false;
+String someInfo="";
 
 void setup()   /****** SETUP: RUNS ONCE ******/
 {
@@ -46,28 +48,41 @@ void setup()   /****** SETUP: RUNS ONCE ******/
 
 void loop()   /****** LOOP: RUNS CONSTANTLY ******/
 {
+
   //Copy input data to output
-  if (RS485Serial.available())
+
+  while (RS485Serial.available())
   {
-    byteSend = RS485Serial.read();   // Read the byte
+    /* byteSend = RS485Serial.read();   // Read the byte */
+    char inChar = (char)RS485Serial.read();
+    if (inChar == '\n') {//If using the IDE monitor newline must be selected.
+      stringComplete = true;
+    } else {
+      someInfo += inChar;
+    }
+  }
 
-    /* digitalWrite(Pin13LED, HIGH);  // Show activity */
-    /* delay(10);               */
-    /* digitalWrite(Pin13LED, LOW);    */
+  if (stringComplete) {
+    digitalWrite(SSerialTxControl, RS485Transmit);  // Enable RS485 Transmit
 
-    if (byteSend == 0x34){
+    RS485Serial.println(someInfo);
+    RS485Serial.println(someInfo.length());
+
+    delay(5);
+
+    if (someInfo == "y"){
+      RS485Serial.println("Turning led on");
       digitalWrite(Pin13LED, HIGH);
     } else {
       digitalWrite(Pin13LED, LOW);
     }
 
-    /* RS485Serial.write("\nGot this :"); */
-    digitalWrite(SSerialTxControl, RS485Transmit);  // Enable RS485 Transmit
-    RS485Serial.write(byteSend); // Send the byte back
-    delay(10);
     digitalWrite(SSerialTxControl, RS485Receive);  // Disable RS485 Transmit
-    delay(50);
-  }// End If RS485SerialAvailable
+    delay(5);
+    someInfo = "";
+
+    stringComplete = false;
+  }
 
 }//--(end main loop )---
 
