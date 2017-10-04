@@ -1,4 +1,5 @@
 #include <SoftwareSerial.h>
+#include "DualGain.h"
 
 #define SSerialRX        0  //Serial Receive pin
 #define SSerialTX        1  //Serial Transmit pin
@@ -73,6 +74,11 @@ void loop()   /****** LOOP: RUNS CONSTANTLY ******/
         state="b";
       }
   }
+    if (someInfo == "release"){
+      state=="r";
+      byte releaseArr[2]={3,7};
+      releaseBlink(13,releaseArr);
+    }
 
     someInfo = "";
 
@@ -200,4 +206,31 @@ boolean isStringInt(String myStr){
   }
   return true;
 }
+
+/* void releaseBlink(byte ledPin, byte *releaseArr){ */
+/*   byte majorRel=releaseArr[0]; */
+/*   byte minorRel=releaseArr[1]; */
+
+/*   byte i=0; */
+/*   digitalWrite(ledPin,LOW); */
+/*   delay(5); */
+
+/*   //Blinking the major release */
+/*   for (i=0;i<majorRel;i++){ */
+/*     digitalWrite(ledPin, HIGH); */
+/*     delay(400); */
+/*     digitalWrite(ledPin, LOW); */
+/*     delay(400); */
+/*   } */
+
+/*   // delay(400); */
+/*   //Blinking the minor release */
+/*   for (i=0;i<minorRel;i++){ */
+/*     digitalWrite(ledPin, HIGH); */
+/*     delay(200); */
+/*     digitalWrite(ledPin, LOW); */
+/*     delay(400); */
+/*   } */
+
+/* } */
 //*********( THE END )***********//

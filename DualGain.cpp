@@ -142,7 +142,6 @@ void G1gainSetup(byte G1code) {
 	// Serial.println(G1code);
 }
 
-
 void G2gainSetup(byte G2code) {
   float G2_PGAgain;
 
@@ -283,4 +282,106 @@ void G2gainSetup(byte G2code) {
 // 	else {Serial.println("comando_scrittura_1: invalid data");}
 // 	stringComplete = false;
 // 	Serial.println();
+// }
+
+//Blinks the release version
+void releaseBlink(byte ledPin, byte *releaseArr){
+  byte majorRel=releaseArr[0];
+  byte minorRel=releaseArr[1];
+
+  byte i=0;
+  digitalWrite(ledPin,LOW);
+  delay(5);
+
+  //Blinking the major release
+  for (i=0;i<majorRel;i++){
+    digitalWrite(ledPin, HIGH);
+    delay(400);
+    digitalWrite(ledPin, LOW);
+    delay(400);
+  }
+
+  // delay(400);
+  //Blinking the minor release
+  for (i=0;i<minorRel;i++){
+    digitalWrite(ledPin, HIGH);
+    delay(200);
+    digitalWrite(ledPin, LOW);
+    delay(400);
+  }
+}
+
+//EEPROM functions
+void getEEPROMVersion(byte *releaseArray){
+  byte eeAddr= 0;
+  byte majorRel,minorRel;
+  EEPROM.get(eeAddr,majorRel);
+  eeAddr += 1;
+  EEPROM.get(eeAddr,minorRel);
+  releaseArray[0]=majorRel;
+  releaseArray[1]=minorRel;
+}
+
+//Slave number starts from 1
+void writeEEPROMSetting(SlaveStruct slaveSettings){
+  byte slaveNumber = slaveSettings.slaveNumber;
+  int eeAddr=SHIFT;
+  eeAddr += (slaveNumber - 1)*sizeof(SlaveStruct);
+  // EEPROM.put(eeAddr,slaveSettings); //Old way
+
+  //Updating each variable, put() only writes if there was a change
+  EEPROM.put(eeAddr,slaveSettings.slaveNumber);
+  eeAddr += sizeof(slaveSettings.slaveNumber);
+
+  EEPROM.put(eeAddr,slaveSettings.VclampPos);
+  eeAddr += sizeof(slaveSettings.VclampPos);
+
+  EEPROM.put(eeAddr,slaveSettings.VclampNeg);
+  eeAddr += sizeof(slaveSettings.VclampNeg);
+
+  EEPROM.put(eeAddr,slaveSettings.G1_Vref);
+  eeAddr += sizeof(slaveSettings.G1_Vref);
+
+  EEPROM.put(eeAddr,slaveSettings.G2_Vref);
+  eeAddr += sizeof(slaveSettings.G2_Vref);//No more vars but I'll
+                                          //leave it
+
+}
+
+SlaveStruct getEEPROMSetting(byte slaveNumber){
+  SlaveStruct mySlaveSetting;
+  int eeAddr=SHIFT;
+  eeAddr += (slaveNumber - 1)*sizeof(SlaveStruct);
+  EEPROM.get(eeAddr,mySlaveSetting);
+  return mySlaveSetting;
+}
+
+//Direct functions
+void getEEPROMVclampPos(byte slaveNumber, unsigned int VclampPos){
+  int eeAddr=SHIFT;
+  int interval=0; //To jump over blocks of slave data
+  interval+=sizeof(byte);//a byte that represents slave number
+  interval+=sizeof(int);//the VclampPos integer
+  interval+=sizeof(int);//the VclampNeg integer
+  interval+=sizeof(float);//the G1_Vref float
+  interval+=sizeof(float);//the G2_Vref float
+
+  eeAddr+=(slaveNumber - 1)*interval;
+  //Now getting the local VclampPos address
+  eeAddr+=sizeof(byte);//Finally at VclampPos
+
+}
+
+// int getVclampPosAddr(byte slaveNum){
+//   int eeAddr=SHIFT; //First 2 bytes are for the version
+//   eeAddr += (slaveNumber - 1)*sizeof(SlaveStruct);
+//   eeAddr += sizeof(byte);
+//   int VclampPos;
+//   EEPROM.put(eeAddr,VclampPos);
+//   return VclampPos;
+// }
+
+// int getVclampPos(byte slaveNum){
+//   int eeAddr=getVclampPosAddr(slaveNum);
+//   EEPROM.get(eeAddr,mySlaveSetting);
 // }
