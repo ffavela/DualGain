@@ -1,14 +1,3 @@
-/* YourDuino SoftwareSerialExample1Remote
-   - Used with YD_SoftwareSerialExampleRS485_1 on another Arduino
-   - Remote: Receive data, loop it back...
-   - Connect this unit Pins 10, 11, Gnd
-   - To other unit Pins 11,10, Gnd  (Cross over)
-   - Pin 3 used for RS485 direction control
-   - Pin 13 LED blinks when data is received
-
-   Questions: terry@yourduino.com
-*/
-
 /*-----( Import needed libraries )-----*/
 #include <SoftwareSerial.h>
 /*-----( Declare Constants and Pin Numbers )-----*/
@@ -21,20 +10,15 @@
 
 #define Pin13LED         13
 
-/*-----( Declare objects )-----*/
 SoftwareSerial RS485Serial(SSerialRX, SSerialTX); // RX, TX
 
-/*-----( Declare Variables )-----*/
-int byteReceived;
-int byteSend;
-
-
-String myString;
-boolean stringComplete=false;
+String myString="";
+String myLocalString="";
 
 void sendRS485Data(String myString);
+void mySerialFunct(void);
 
-void setup()   /****** SETUP: RUNS ONCE ******/
+void setup()
 {
   // Start the built-in serial port, probably to Serial Monitor
   Serial.begin(9600);
@@ -47,70 +31,26 @@ void setup()   /****** SETUP: RUNS ONCE ******/
 
   // Start the software serial port, to another device
   RS485Serial.begin(4800);   // set the data rate
-}//--(end setup )---
+}
 
 
-void loop()   /****** LOOP: RUNS CONSTANTLY ******/
+void loop()
 {
-  //Copy input data to output
+  if (RS485Serial.available() > 0){
+    myString=RS485Serial.readStringUntil('$');
+    sendRS485Data("Master 1: ");
+    myString+='$';
+    sendRS485Data(myString);
+    Serial.print(myString);
+    delay(40);//Waiting for the Serial buffer to get filled
 
-  while (RS485Serial.available())
-  {
-    char inChar = (char)RS485Serial.read();
-    myString += inChar;
-    if (inChar == '$' || inChar == '\0' || inChar == '\n') {
-      stringComplete = true;
+    if (Serial.available()){
+      myLocalString = Serial.readStringUntil('$');
+      sendRS485Data("Master 1 slave response: ");
+      sendRS485Data(myLocalString);
     }
-
   }
-
-  if (stringComplete){
-    digitalWrite(Pin13LED, LOW);
-    delay(5);
-    digitalWrite(Pin13LED, HIGH);
-    delay(5);
-    digitalWrite(Pin13LED, LOW);
-
-    if (myString[0] == '2'){
-          digitalWrite(Pin13LED, HIGH);
-          sendRS485Data("Master 2: ");
-          sendRS485Data(myString);
-          myString="";
-          stringComplete=false;
-    } else {
-      digitalWrite(Pin13LED, LOW);
-    }
-    /* digitalWrite(SSerialTxControl, RS485Transmit); */
-    /* myString+='$'; */
-    /* RS485Serial.print(myString); */
-    /* delay(10); */
-    /* digitalWrite(SSerialTxControl, RS485Receive); */
-    /* sendRS485Data(myString); */
-    myString="";
-    stringComplete=false;
-  }
-
-/*   if (RS485Serial.available()) */
-/*   { */
-/*     byteSend = RS485Serial.read();   // Read the byte */
-
-/*     digitalWrite(Pin13LED, HIGH);  // Show activity */
-/*     delay(10); */
-/*     digitalWrite(Pin13LED, LOW); */
-
-/*     digitalWrite(SSerialTxControl, RS485Transmit);  // Enable RS485 Transmit */
-/*     RS485Serial.write(byteSend); // Send the byte back */
-/*     delay(10); */
-/*     digitalWrite(SSerialTxControl, RS485Receive);  // Disable RS485 Transmit */
-/* //    delay(100); */
-/*   }// End If RS485SerialAvailable */
-
-}//--(end main loop )---
-
-/*-----( Declare User-written Functions )-----*/
-//NONE
-
-//*********( THE END )***********
+}
 
 void sendRS485Data(String myString){
   digitalWrite(SSerialTxControl, RS485Transmit); // Enable RS485 Transmit
