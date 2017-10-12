@@ -74,7 +74,7 @@ void setPwmFrequency(int pin, int divisor) {
 
 
 
-// funzioni di SCRITTURA
+// writting functions
 void G1gainSetup(byte G1code) {
   float G1_PGAgain     = 0;
 
@@ -322,7 +322,7 @@ void getEEPROMVersion(byte *releaseArray){
   releaseArray[1]=minorRel;
 }
 
-//Slave number starts from 1
+//Slave number starts from 1 THIS ONE SHOULD BE USED
 void writeEEPROMSetting(SlaveStruct slaveSettings){
   byte slaveNumber = slaveSettings.slaveNumber;
   int eeAddr=SHIFT;
@@ -347,7 +347,7 @@ void writeEEPROMSetting(SlaveStruct slaveSettings){
                                           //leave it
 
 }
-
+//This one should be used
 SlaveStruct getEEPROMSetting(byte slaveNumber){
   SlaveStruct mySlaveSetting;
   int eeAddr=SHIFT;
@@ -356,7 +356,7 @@ SlaveStruct getEEPROMSetting(byte slaveNumber){
   return mySlaveSetting;
 }
 
-//Direct functions
+//Direct functions, deprecated
 void getEEPROMVclampPos(byte slaveNumber, unsigned int VclampPos){
   int eeAddr=SHIFT;
   int interval=0; //To jump over blocks of slave data
@@ -385,3 +385,23 @@ void getEEPROMVclampPos(byte slaveNumber, unsigned int VclampPos){
 //   int eeAddr=getVclampPosAddr(slaveNum);
 //   EEPROM.get(eeAddr,mySlaveSetting);
 // }
+
+//powerOn and powerOff the channels
+void powerOff(void){
+  Wire.beginTransmission(0x20);
+  // "0x20 because the chip is of type "PCF8574" it starts the
+  // transmission with the first PCF8574 coded with 0x38, the second
+  // will be...?
+	Wire.write((byte)0b11111111);
+	//sends a byte - the PGA is in powerOFF if the level is high
+	Wire.endTransmission();
+}
+
+void powerOn(byte ledPin, byte chanInfo){
+  Wire.beginTransmission(0x20);
+  // "0x20 because the chip is of type "PCF8574" it starts the
+  // transmission with the first PCF8574 coded with 0x38, the second
+  // will be...?
+  Wire.write(chanInfo);
+  Wire.endTransmission();
+}

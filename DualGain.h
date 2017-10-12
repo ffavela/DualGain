@@ -9,8 +9,9 @@
 #include "Arduino.h"
 #include <EEPROM.h>
 #include<math.h>
+#include<Wire.h>
 
-#define SHIFT 2 //EEPROM shift first 2 bytes are for the version
+#define SHIFT 2 //EEPROM shift first 2 bytes are for ID
 
 int myAwesomeFunction(int);
 int myAwesomeFunction2(int,int);
@@ -67,3 +68,7 @@ void getEEPROMVclampPos(byte slaveNumber, unsigned int VclampPos);
 /* int getVclampNeg(byte slaveNum); */
 /* float getG1_Vref(byte slaveNum); */
 /* float getG2_Vref(byte slaveNum); */
+
+//For turning on and off the channels
+void powerOff(void);
+void powerOn(byte ledPin, byte chanInfo);

@@ -88,9 +88,9 @@ void setup() {
 	delay(2000);
 
 	digitalWrite(LD1_pin, LOW);
-    digitalWrite(LD2_pin, LOW);
-    digitalWrite(LD3_pin, LOW);
-    digitalWrite(LD4_pin, LOW);
+  digitalWrite(LD2_pin, LOW);
+  digitalWrite(LD3_pin, LOW);
+  digitalWrite(LD4_pin, LOW);
  	delay(500);
 
 
