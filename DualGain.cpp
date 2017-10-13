@@ -6,38 +6,6 @@
 #include "DualGain.h"
 #include<math.h>
 
-int myAwesomeFunction(int myValue)
-{
-  return 2*myValue;
-}
-
-int myAwesomeFunction2(int myValue,int inc)
-{
-  return (int) 2*myValue*sin(0.4*inc);
-}
-
-int myAwesomeFunction3(int myValue,int inc)
-{
-  return (int) 2*myValue*abs(sin(0.4*inc));
-}
-
-int myAwesomeFunction4(int myValue)
-{
-  if (myValue < 128){
-    return 5;
-  } else {
-    return 0;
-  }
-}
-
-void myAwesomeWrite(int ledPin, int awesomeValue){
-  if (awesomeValue > 0){
-    digitalWrite(ledPin, HIGH);
-  } else {
-    digitalWrite(ledPin, LOW);
-  }
-}
-
 // sull pin imposta la freq. del PWM a 31250Hz
 void setPwmFrequency(int pin, int divisor) {
 	byte mode;
@@ -71,8 +39,6 @@ void setPwmFrequency(int pin, int divisor) {
 		TCCR2B = TCCR2B & 0b11111000 | mode;
 	}
 }
-
-
 
 // writting functions
 void G1gainSetup(byte G1code) {
@@ -312,20 +278,22 @@ void releaseBlink(byte ledPin, byte *releaseArr){
 }
 
 //EEPROM functions
-void getEEPROMVersion(byte *releaseArray){
+void getEEPROMStructID(IDStruct idStruct){
   byte eeAddr= 0;
-  byte majorRel,minorRel;
-  EEPROM.get(eeAddr,majorRel);
-  eeAddr += 1;
-  EEPROM.get(eeAddr,minorRel);
-  releaseArray[0]=majorRel;
-  releaseArray[1]=minorRel;
+  EEPROM.get(eeAddr,idStruct);
+}
+
+void writeEEPROMStructID(IDStruct idStruct){
+  byte eeAddr=0;
+  //put will only write if the value is different from the already
+  //present in memory
+  EEPROM.put(eeAddr,idStruct);
 }
 
 //Slave number starts from 1 THIS ONE SHOULD BE USED
 void writeEEPROMSetting(SlaveStruct slaveSettings){
   byte slaveNumber = slaveSettings.slaveNumber;
-  int eeAddr=SHIFT;
+  int eeAddr=SHIFT-1;
   eeAddr += (slaveNumber - 1)*sizeof(SlaveStruct);
   // EEPROM.put(eeAddr,slaveSettings); //Old way
 
@@ -350,7 +318,7 @@ void writeEEPROMSetting(SlaveStruct slaveSettings){
 //This one should be used
 SlaveStruct getEEPROMSetting(byte slaveNumber){
   SlaveStruct mySlaveSetting;
-  int eeAddr=SHIFT;
+  int eeAddr=SHIFT-1;//addresses start from 0...
   eeAddr += (slaveNumber - 1)*sizeof(SlaveStruct);
   EEPROM.get(eeAddr,mySlaveSetting);
   return mySlaveSetting;

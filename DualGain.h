@@ -11,14 +11,9 @@
 #include<math.h>
 #include<Wire.h>
 
-#define SHIFT 2 //EEPROM shift first 2 bytes are for ID
-
-int myAwesomeFunction(int);
-int myAwesomeFunction2(int,int);
-int myAwesomeFunction3(int,int);
-int myAwesomeFunction4(int);
-
-void myAwesomeWrite(int, int);
+#define SHIFT 3 //EEPROM shift first 3 bytes are for ID
+//first a char, either M or S (for master or slave), then and int (2
+//bytes)
 
 void setPwmFrequency(int pin, int divisor);
 
@@ -33,12 +28,10 @@ void VclampNegSet(unsigned int VclampNeg);
 //Communication functions
 void serialEvent(void);
 
-
 //...more writting functions
 void setShdn(void);
 
 void releaseBlink(byte ledPin, byte *releaseArr);
-
 
 //EEPROM memory functions
 struct SlaveStruct {
@@ -49,7 +42,12 @@ struct SlaveStruct {
   float G2_Vref;
 };
 
-void getEEPROMVersion(byte releaseArray[2]);
+struct IDStruct{
+  char typeID;
+  int numberID;
+};
+
+void getEEPROMID(void);
 void writeEEPROMSetting( SlaveStruct );
 SlaveStruct getEEPROMSetting(byte slaveNumber);
 
