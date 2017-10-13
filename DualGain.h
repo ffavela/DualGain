@@ -1,7 +1,6 @@
 /*
   DualGain.h library for the dual gain module.
 */
-
 #ifndef DualGain_h
 #define DualGain_h
 #endif
@@ -14,6 +13,15 @@
 #define SHIFT 3 //EEPROM shift first 3 bytes are for ID
 //first a char, either M or S (for master or slave), then and int (2
 //bytes)
+
+#define BIT_0  1   // 0000 0001
+#define BIT_1  2   // 0000 0010
+#define BIT_2  4   // 0000 0100
+#define BIT_3  8   // 0000 1000
+#define BIT_4  16  // 0001 0000
+#define BIT_5  32  // 0010 0000
+#define BIT_6  64  // 0100 0000
+#define BIT_7  128 // 1000 0000
 
 void setPwmFrequency(int pin, int divisor);
 
@@ -69,4 +77,5 @@ void getEEPROMVclampPos(byte slaveNumber, unsigned int VclampPos);
 
 //For turning on and off the channels
 void powerOff(void);
-void powerOn(byte ledPin, byte chanInfo);
+void powerOn(byte chanInfo);
+byte getLedPin(byte chanInfo);

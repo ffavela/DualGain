@@ -72,7 +72,8 @@ void setup() {
 	/* Wire.endTransmission(); */
 	/* digitalWrite(LD4_pin, HIGH); */
   
-  powerOn(LD4_pin,(byte)0b11111110);
+  /* powerOn(LD4_pin,(byte)0b11111110); */
+  powerOn((byte)0b11111110);
 	delay(2000);
 
 	// powerON channels 16-31 @ G1
@@ -85,7 +86,8 @@ void setup() {
 	/* Wire.endTransmission(); */
 	/* digitalWrite(LD3_pin, HIGH); */
 
-  powerOn(LD3_pin,(byte)0b11111100);
+  /* powerOn(LD3_pin,(byte)0b11111100); */
+  powerOn((byte)0b11111100);
 	delay(2000);
 
 	// powerON channels 00-15 @ G2
@@ -98,7 +100,8 @@ void setup() {
 	/* Wire.endTransmission(); */
 	/* digitalWrite(LD2_pin, HIGH); */
 
-  powerOn(LD2_pin,(byte)0b11111000);
+  /* powerOn(LD2_pin,(byte)0b11111000); */
+  powerOn((byte)0b11111000);
 	delay(2000);
   
 
@@ -112,7 +115,8 @@ void setup() {
   /* Wire.endTransmission(); */
   /* digitalWrite(LD1_pin, HIGH); */
 
-  powerOn(LD1_pin,(byte)0b11110000);
+  /* powerOn(LD1_pin,(byte)0b11110000); */
+  powerOn((byte)0b11110000);
   delay(2000);
 
 	digitalWrite(LD1_pin, LOW);
@@ -145,7 +149,8 @@ void setup() {
 	/* Wire.endTransmission(); */
 	/* digitalWrite(LD4_pin, HIGH); */
 
-  powerOn(LD4_pin,(byte)0b11100000);
+  /* powerOn(LD4_pin,(byte)0b11100000); */
+  powerOn((byte)0b11100000);
 	delay(2000);
 
 	// powerON channels 16-31 @ G3
@@ -158,7 +163,8 @@ void setup() {
 	/* Wire.endTransmission(); */
 	/* digitalWrite(LD3_pin, HIGH); */
 
-  powerOn(LD3_pin,(byte)0b11000000);
+  /* powerOn(LD3_pin,(byte)0b11000000); */
+  powerOn((byte)0b11000000);
 	delay(2000);
 
 	// powerON channels 00-15 @ G4
@@ -171,7 +177,8 @@ void setup() {
 	/* Wire.endTransmission(); */
 	/* digitalWrite(LD2_pin, HIGH); */
 
-  powerOn(LD2_pin,(byte)0b10000000);
+  /* powerOn(LD2_pin,(byte)0b10000000); */
+  powerOn((byte)0b10000000);
   delay(2000);
 
 	// powerON channels 16-31 @ G4
@@ -184,7 +191,8 @@ void setup() {
 	/* Wire.endTransmission(); */
 	/* digitalWrite(LD1_pin, HIGH); */
 
-  powerOn(LD1_pin,(byte)0b00000000);
+  /* powerOn(LD1_pin,(byte)0b00000000); */
+  powerOn((byte)0b00000000);
 	delay(2000);
 
 

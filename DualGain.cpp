@@ -313,7 +313,6 @@ void writeEEPROMSetting(SlaveStruct *slaveSettings){
   EEPROM.put(eeAddr,slaveSettings->G2_Vref);
   eeAddr += sizeof(slaveSettings->G2_Vref);//No more vars but I'll
                                           //leave it
-
 }
 //This one should be used
 SlaveStruct getEEPROMSetting(byte slaveNumber){
@@ -365,11 +364,24 @@ void powerOff(void){
 	Wire.endTransmission();
 }
 
-void powerOn(byte ledPin, byte chanInfo){
+void powerOn(byte chanInfo){
   Wire.beginTransmission(0x20);
   // "0x20 because the chip is of type "PCF8574" it starts the
   // transmission with the first PCF8574 coded with 0x38, the second
   // will be...?
+  byte ledPin=(byte)getLedPin(chanInfo);
   Wire.write(chanInfo);
+  digitalWrite(ledPin, HIGH);
   Wire.endTransmission();
+}
+
+byte getLedPin(byte chanInfo){
+  if( ! (chanInfo & BIT_0 || chanInfo & BIT_4) )
+    return 10;//LD4_pin
+  if( ! (chanInfo & BIT_1 || chanInfo & BIT_5) )
+    return 9;//LD3_pin
+  if( ! (chanInfo & BIT_2 || chanInfo & BIT_6) )
+    return 8;//LD2_pin
+  if( ! (chanInfo & BIT_3 || chanInfo & BIT_7) )
+    return 7;//LD1_pin
 }
