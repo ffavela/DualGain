@@ -98,7 +98,7 @@ void setup() {
 	/* Wire.endTransmission(); */
 	/* digitalWrite(LD2_pin, HIGH); */
 
-  powerOn(LD3_pin,(byte)0b11111000);
+  powerOn(LD2_pin,(byte)0b11111000);
 	delay(2000);
   
 
