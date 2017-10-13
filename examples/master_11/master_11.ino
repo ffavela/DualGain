@@ -24,7 +24,6 @@ const byte LD3_pin =  9;
 const byte LD4_pin = 10;
 const byte LD5_pin = 13;
 
-
 void setup() {
 	Wire.begin();
 	delay(5);

@@ -278,40 +278,40 @@ void releaseBlink(byte ledPin, byte *releaseArr){
 }
 
 //EEPROM functions
-void getEEPROMStructID(IDStruct idStruct){
+void getEEPROMStructID(IDStruct *idStruct){
   byte eeAddr= 0;
-  EEPROM.get(eeAddr,idStruct);
+  EEPROM.get(eeAddr,*idStruct);
 }
 
-void writeEEPROMStructID(IDStruct idStruct){
+void writeEEPROMStructID(IDStruct *idStruct){
   byte eeAddr=0;
   //put will only write if the value is different from the already
   //present in memory
-  EEPROM.put(eeAddr,idStruct);
+  EEPROM.put(eeAddr,*idStruct);
 }
 
 //Slave number starts from 1 THIS ONE SHOULD BE USED
-void writeEEPROMSetting(SlaveStruct slaveSettings){
-  byte slaveNumber = slaveSettings.slaveNumber;
+void writeEEPROMSetting(SlaveStruct *slaveSettings){
+  byte slaveNumber = slaveSettings->slaveNumber;
   int eeAddr=SHIFT-1;
   eeAddr += (slaveNumber - 1)*sizeof(SlaveStruct);
   // EEPROM.put(eeAddr,slaveSettings); //Old way
 
   //Updating each variable, put() only writes if there was a change
-  EEPROM.put(eeAddr,slaveSettings.slaveNumber);
-  eeAddr += sizeof(slaveSettings.slaveNumber);
+  EEPROM.put(eeAddr,slaveSettings->slaveNumber);
+  eeAddr += sizeof(slaveSettings->slaveNumber);
 
-  EEPROM.put(eeAddr,slaveSettings.VclampPos);
-  eeAddr += sizeof(slaveSettings.VclampPos);
+  EEPROM.put(eeAddr,slaveSettings->VclampPos);
+  eeAddr += sizeof(slaveSettings->VclampPos);
 
-  EEPROM.put(eeAddr,slaveSettings.VclampNeg);
-  eeAddr += sizeof(slaveSettings.VclampNeg);
+  EEPROM.put(eeAddr,slaveSettings->VclampNeg);
+  eeAddr += sizeof(slaveSettings->VclampNeg);
 
-  EEPROM.put(eeAddr,slaveSettings.G1_Vref);
-  eeAddr += sizeof(slaveSettings.G1_Vref);
+  EEPROM.put(eeAddr,slaveSettings->G1_Vref);
+  eeAddr += sizeof(slaveSettings->G1_Vref);
 
-  EEPROM.put(eeAddr,slaveSettings.G2_Vref);
-  eeAddr += sizeof(slaveSettings.G2_Vref);//No more vars but I'll
+  EEPROM.put(eeAddr,slaveSettings->G2_Vref);
+  eeAddr += sizeof(slaveSettings->G2_Vref);//No more vars but I'll
                                           //leave it
 
 }

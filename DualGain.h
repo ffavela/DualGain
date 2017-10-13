@@ -47,8 +47,8 @@ struct IDStruct{
   int numberID;
 };
 
-void getEEPROMID(void);
-void writeEEPROMSetting( SlaveStruct );
+void getEEPROMStructID( IDStruct *idStruct);
+void writeEEPROMStructID( IDStruct *idStruct );
 SlaveStruct getEEPROMSetting(byte slaveNumber);
 
 void getEEPROMVclampPos(byte slaveNumber, unsigned int VclampPos);
