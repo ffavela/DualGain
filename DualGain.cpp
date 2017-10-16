@@ -364,18 +364,6 @@ void powerOff(void){
 	Wire.endTransmission();
 }
 
-// void powerOn(byte chanInfo){
-//   Wire.beginTransmission(0x20);
-//   // "0x20 because the chip is of type "PCF8574" it starts the
-//   // transmission with the first PCF8574 coded with 0x38, the second
-//   // will be...?
-//   byte ledInfo=(byte)getLedPin(chanInfo);
-//   Wire.write(chanInfo);
-//   // digitalWrite(ledPin, HIGH);
-//   turnOnOffLeds(ledInfo);
-//   Wire.endTransmission();
-// }
-
 void powerOn(byte ledPin, byte chanInfo){
   Wire.beginTransmission(0x20);
   // "0x20 because the chip is of type "PCF8574" it starts the
@@ -386,31 +374,3 @@ void powerOn(byte ledPin, byte chanInfo){
   // turnOnOffLeds(ledInfo);
   Wire.endTransmission();
 }
-
-// byte getLedPin(byte chanInfo){
-//   if( ! (chanInfo & BIT_0 || chanInfo & BIT_4) )
-//     myVar+=8;//LD4 info
-//   // return 10;//LD4_pin
-//   if( ! (chanInfo & BIT_1 || chanInfo & BIT_5) )
-//     myVar+=4;//LD3 info
-//   // return 9;//LD3_pin
-//   if( ! (chanInfo & BIT_2 || chanInfo & BIT_6) )
-//     myVar+=2;
-//   // return 8;//LD2_pin
-//   if( ! (chanInfo & BIT_3 || chanInfo & BIT_7) )
-//     myVar+=1;//LD1 info
-//   // return 7;//LD1_pin
-// }
-
-// void turnOnLeds(byte ledInfo){
-//   byte i,n=1;
-//   byte ledPin,shift=6;
-//   for(i=1;i<=4;i++){
-//     if(ledInfo & n){
-//       ledPin=shift+i;
-//       //we use shift for the fact that the leds are 7,8,9,10
-//       digitalWrite(ledPin,HIGH);
-//     }
-//     n=2*n;//==> n=1,2,3,4
-//   }
-// }
