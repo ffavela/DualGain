@@ -81,3 +81,4 @@ void getEEPROMVclampPos(byte slaveNumber, unsigned int VclampPos);
 //For turning on and off the channels
 void powerOff(void);
 void powerOn(byte ledPin, byte chanInfo);
+void powerOnGroup(const byte *LDPointer);

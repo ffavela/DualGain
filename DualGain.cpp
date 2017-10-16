@@ -56,7 +56,6 @@ void G1gainSetup(byte G1code) {
   byte G1G2_VLpwm_pin   = 11;
   byte LD6_pin		  = 13;
 
-
 	switch (G1code) {
 		case 0:
 			G1_PGAgain = 0.08;  // serve per il calcolo di G1_Vref=G1_Vos/(1+G1_PGAgain)
@@ -373,4 +372,85 @@ void powerOn(byte ledPin, byte chanInfo){
   digitalWrite(ledPin, HIGH);
   // turnOnOffLeds(ledInfo);
   Wire.endTransmission();
+}
+
+void powerOnGroup(const byte *LDPointer){
+  //Getting back the led pins
+  const byte LD1_pin=*LDPointer;
+  LDPointer+=1;
+  const byte LD2_pin=*LDPointer;
+  LDPointer+=1;
+  const byte LD3_pin=*LDPointer;
+  LDPointer+=1;
+  const byte LD4_pin=*LDPointer;
+
+	// start powerON sequence channels 00-31 @ G1/G2
+	digitalWrite(LD1_pin, HIGH);
+	digitalWrite(LD2_pin, HIGH);
+	digitalWrite(LD3_pin, HIGH);
+	digitalWrite(LD4_pin, HIGH);
+	delay(100);
+	digitalWrite(LD1_pin, LOW);
+	digitalWrite(LD2_pin, LOW);
+	digitalWrite(LD3_pin, LOW);
+	digitalWrite(LD4_pin, LOW);
+	delay(900);
+
+  // powerON channels 00-15 @ G1
+  powerOn(LD4_pin,(byte)0b11111110);//254
+	delay(2000);
+
+	// powerON channels 16-31 @ G1
+  powerOn(LD3_pin,(byte)0b11111100);//252
+  /* powerOn((byte)0b11111100); */
+	delay(2000);
+
+	// powerON channels 00-15 @ G2
+  powerOn(LD2_pin,(byte)0b11111000);//248
+	delay(2000);
+
+	// powerON channels 16-31 @ G2
+  powerOn(LD1_pin,(byte)0b11110000);//240
+  delay(2000);
+
+	digitalWrite(LD1_pin, LOW);
+  digitalWrite(LD2_pin, LOW);
+  digitalWrite(LD3_pin, LOW);
+  digitalWrite(LD4_pin, LOW);
+  delay(500);
+
+	// start power ON channels 32-63
+	for(byte i=1; i<=2; i++) {
+		digitalWrite(LD1_pin, HIGH);
+		digitalWrite(LD2_pin, HIGH);
+		digitalWrite(LD3_pin, HIGH);
+		digitalWrite(LD4_pin, HIGH);
+		delay(500);
+		digitalWrite(LD1_pin, LOW);
+		digitalWrite(LD2_pin, LOW);
+		digitalWrite(LD3_pin, LOW);
+		digitalWrite(LD4_pin, LOW);
+		delay(500);
+	}
+
+	// powerON channels 00-15 @ G3
+  powerOn(LD4_pin,(byte)0b11100000);//224
+	delay(2000);
+
+	// powerON channels 16-31 @ G3
+  powerOn(LD3_pin,(byte)0b11000000);//192
+	delay(2000);
+
+	// powerON channels 00-15 @ G4
+  powerOn(LD2_pin,(byte)0b10000000);//128
+  delay(2000);
+
+	// powerON channels 16-31 @ G4
+  powerOn(LD1_pin,(byte)0b00000000); //0
+	delay(2000);
+
+  digitalWrite(LD1_pin, LOW);
+  digitalWrite(LD2_pin, LOW);
+  digitalWrite(LD3_pin, LOW);
+  digitalWrite(LD4_pin, LOW);
 }
