@@ -64,6 +64,9 @@ SlaveStruct getEEPROMSetting(byte slaveNumber);
 
 void getEEPROMVclampPos(byte slaveNumber, unsigned int VclampPos);
 
+byte turnOffK(byte n, byte k);
+byte turnOnK(byte n, byte k);
+
 //Direct functions, no need to read entire struct
 
 //This ones for getting the address

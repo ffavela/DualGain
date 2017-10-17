@@ -454,3 +454,30 @@ void powerOnGroup(const byte *LDPointer){
   digitalWrite(LD3_pin, LOW);
   digitalWrite(LD4_pin, LOW);
 }
+
+// Returns a number that has all bits same as n
+// except the k'th bit which is made 0
+byte turnOffK(byte n, byte k)
+{
+    // k must be greater than 0 and less than 9
+    if (k < 0 || k >= 9)
+      return n;
+
+    // Do & of n with a number with all set bits except
+    // the k'th bit
+    return (n & ~(1 << (k)));
+    /* return (n ^ (1 << (k))); //this one toggles */
+}
+
+// Returns a number that has all bits same as n
+// except the k'th bit which is made 1
+byte turnOnK(byte n, byte k)
+{
+    // k must be greater than 0 and less than 9
+    if (k < 0 || k >= 9)
+      return n;
+
+    // Do & of n with a number with all set bits except
+    // the k'th bit
+    return (n | (1 << (k)));
+}
