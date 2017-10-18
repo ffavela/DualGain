@@ -24,8 +24,10 @@ const byte LD3_pin =  9;
 const byte LD4_pin = 10;
 const byte LD5_pin = 13;
 
+byte powerByte = 0; //For turning on and off the groups
+
 //Pointing to the LD1_pin address
-const byte *LDPointer=&LD1_pin;
+/* const byte *LDPointer=&LD1_pin; */
 
 void setup() {
 	Wire.begin();
@@ -37,14 +39,14 @@ void setup() {
 	pinMode(LD4_pin, OUTPUT);
 	pinMode(LD5_pin, OUTPUT);
 
-  //The new function 
+  //The new function
   powerOff();
 
   //Blinking the release version
   releaseBlink(LD5_pin,releaseArr);
 
   //turn power on all groups
-  powerOnGroup(LDPointer);
+  powerOnGroup(powerByte);
 }
 
 void loop() {

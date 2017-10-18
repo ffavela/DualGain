@@ -374,15 +374,13 @@ void powerOn(byte ledPin, byte chanInfo){
   Wire.endTransmission();
 }
 
-void powerOnGroup(const byte *LDPointer){
+void powerOnGroup(byte powerByte){
   //Getting back the led pins
-  const byte LD1_pin=*LDPointer;
-  LDPointer+=1;
-  const byte LD2_pin=*LDPointer;
-  LDPointer+=1;
-  const byte LD3_pin=*LDPointer;
-  LDPointer+=1;
-  const byte LD4_pin=*LDPointer;
+  const byte LD1_pin =  7;
+  const byte LD2_pin =  8;
+  const byte LD3_pin =  9;
+  const byte LD4_pin = 10;
+  const byte LD5_pin = 13;
 
 	// start powerON sequence channels 00-31 @ G1/G2
 	digitalWrite(LD1_pin, HIGH);
@@ -402,6 +400,7 @@ void powerOnGroup(const byte *LDPointer){
 
 	// powerON channels 16-31 @ G1
   powerOn(LD3_pin,(byte)0b11111100);//252
+  // powerOn(LD3_pin,(byte)0b11111101);//252
   /* powerOn((byte)0b11111100); */
 	delay(2000);
 
@@ -457,27 +456,34 @@ void powerOnGroup(const byte *LDPointer){
 
 // Returns a number that has all bits same as n
 // except the k'th bit which is made 0
-byte turnOffK(byte n, byte k)
-{
-    // k must be greater than 0 and less than 9
+byte turnOffK(byte n, byte k) {
+    // k must be positive and less than 9
     if (k < 0 || k >= 9)
       return n;
 
     // Do & of n with a number with all set bits except
     // the k'th bit
-    return (n & ~(1 << (k)));
-    /* return (n ^ (1 << (k))); //this one toggles */
+    return (n & ~(1 << k));
+    /* return (n ^ (1 << k)); //this one toggles */
 }
 
 // Returns a number that has all bits same as n
 // except the k'th bit which is made 1
-byte turnOnK(byte n, byte k)
-{
-    // k must be greater than 0 and less than 9
+byte turnOnK(byte n, byte k) {
+    // k must be positive 0 and less than 9
     if (k < 0 || k >= 9)
       return n;
 
     // Do & of n with a number with all set bits except
     // the k'th bit
-    return (n | (1 << (k)));
+    return (n | (1 << k));
+}
+
+byte checkBitK(byte n, byte k){
+    if (k < 0 || k >= 9)
+      return 0; //False
+
+    if ( (n & (1 << k)) != 0)
+      return 1; //True
+
 }
