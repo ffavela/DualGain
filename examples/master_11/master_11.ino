@@ -1,7 +1,10 @@
 ///////////////////////////////////////////////////////
 /* release version */
-byte releaseArr[2]={1,1};
+byte releaseArr[2]={1,2};
 //////////////////////////////////////////////////////
+
+// 18.10.2017
+// Implemented the powerOnGroup function
 
 // 12.10.2017
 // Modified the comments added a powerOn/Off functions
@@ -46,7 +49,7 @@ void setup() {
   releaseBlink(LD5_pin,releaseArr);
 
   //turn power on all groups
-  powerOnGroup(powerByte);
+  powerByte=powerOnGroup(powerByte);
 }
 
 void loop() {

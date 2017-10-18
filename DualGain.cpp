@@ -358,12 +358,17 @@ void powerOff(void){
   // "0x20 because the chip is of type "PCF8574" it starts the
   // transmission with the first PCF8574 coded with 0x38, the second
   // will be...?
-	Wire.write((byte)0b11111111);
-	//sends a byte - the PGA is in powerOFF if the level is high
-	Wire.endTransmission();
+  Wire.write((byte)0b11111111);
+  //sends a byte - the PGA is in powerOFF if the level is high
+  Wire.endTransmission();
 }
 
 void powerOn(byte ledPin, byte chanInfo){
+  //Negate the bytes so we get the PCF8574 convention where on is 0
+  //and on is one
+  chanInfo= (byte) ~chanInfo; //the byte cast is for making sure
+			      //nothing weird happens during the
+			      //negation
   Wire.beginTransmission(0x20);
   // "0x20 because the chip is of type "PCF8574" it starts the
   // transmission with the first PCF8574 coded with 0x38, the second
@@ -374,7 +379,7 @@ void powerOn(byte ledPin, byte chanInfo){
   Wire.endTransmission();
 }
 
-void powerOnGroup(byte powerByte){
+byte powerOnGroup(byte powerByte){
   //Getting back the led pins
   const byte LD1_pin =  7;
   const byte LD2_pin =  8;
@@ -382,108 +387,102 @@ void powerOnGroup(byte powerByte){
   const byte LD4_pin = 10;
   const byte LD5_pin = 13;
 
-	// start powerON sequence channels 00-31 @ G1/G2
-	digitalWrite(LD1_pin, HIGH);
-	digitalWrite(LD2_pin, HIGH);
-	digitalWrite(LD3_pin, HIGH);
-	digitalWrite(LD4_pin, HIGH);
-	delay(100);
-	digitalWrite(LD1_pin, LOW);
-	digitalWrite(LD2_pin, LOW);
-	digitalWrite(LD3_pin, LOW);
-	digitalWrite(LD4_pin, LOW);
-	delay(900);
+  const byte LD_pins[8] = {LD4_pin,LD3_pin,LD2_pin,
+			   LD1_pin,LD4_pin,LD3_pin,
+			   LD2_pin,LD1_pin};
 
-  // powerON channels 00-15 @ G1
-  powerOn(LD4_pin,(byte)0b11111110);//254
-	delay(2000);
-
-	// powerON channels 16-31 @ G1
-  powerOn(LD3_pin,(byte)0b11111100);//252
-  // powerOn(LD3_pin,(byte)0b11111101);//252
-  /* powerOn((byte)0b11111100); */
-	delay(2000);
-
-	// powerON channels 00-15 @ G2
-  powerOn(LD2_pin,(byte)0b11111000);//248
-	delay(2000);
-
-	// powerON channels 16-31 @ G2
-  powerOn(LD1_pin,(byte)0b11110000);//240
-  delay(2000);
-
-	digitalWrite(LD1_pin, LOW);
-  digitalWrite(LD2_pin, LOW);
-  digitalWrite(LD3_pin, LOW);
-  digitalWrite(LD4_pin, LOW);
-  delay(500);
-
-	// start power ON channels 32-63
-	for(byte i=1; i<=2; i++) {
-		digitalWrite(LD1_pin, HIGH);
-		digitalWrite(LD2_pin, HIGH);
-		digitalWrite(LD3_pin, HIGH);
-		digitalWrite(LD4_pin, HIGH);
-		delay(500);
-		digitalWrite(LD1_pin, LOW);
-		digitalWrite(LD2_pin, LOW);
-		digitalWrite(LD3_pin, LOW);
-		digitalWrite(LD4_pin, LOW);
-		delay(500);
-	}
-
-	// powerON channels 00-15 @ G3
-  powerOn(LD4_pin,(byte)0b11100000);//224
-	delay(2000);
-
-	// powerON channels 16-31 @ G3
-  powerOn(LD3_pin,(byte)0b11000000);//192
-	delay(2000);
-
-	// powerON channels 00-15 @ G4
-  powerOn(LD2_pin,(byte)0b10000000);//128
-  delay(2000);
-
-	// powerON channels 16-31 @ G4
-  powerOn(LD1_pin,(byte)0b00000000); //0
-	delay(2000);
-
+  // start powerON sequence channels 00-31 @ G1/G2
+  digitalWrite(LD1_pin, HIGH);
+  digitalWrite(LD2_pin, HIGH);
+  digitalWrite(LD3_pin, HIGH);
+  digitalWrite(LD4_pin, HIGH);
+  delay(100);
   digitalWrite(LD1_pin, LOW);
   digitalWrite(LD2_pin, LOW);
   digitalWrite(LD3_pin, LOW);
   digitalWrite(LD4_pin, LOW);
+  delay(900);
+
+  // powerON channels
+  // i=0; 00-15 @ G1
+  // i=1; 16-31 @ G1
+  // i=2; 00-15 @ G2
+  // i=3; 16-31 @ G2
+  for (byte i = 0; i < 4; i++){
+    powerByte=turnOnK(powerByte, i);
+    powerOn(LD_pins[i], powerByte);
+    //Check current here
+    //If current not ok ==> powerByte=turnOffK(powerByte, i);
+    delay(2000);
+  }
+
+  for (byte i = 0; i < 4; i++){
+    digitalWrite(LD_pins[i],LOW);
+    delay(500);
+  }
+
+  // start power ON channels 32-63
+  for(byte i=1; i<=2; i++) {
+    digitalWrite(LD1_pin, HIGH);
+    digitalWrite(LD2_pin, HIGH);
+    digitalWrite(LD3_pin, HIGH);
+    digitalWrite(LD4_pin, HIGH);
+    delay(500);
+    digitalWrite(LD1_pin, LOW);
+    digitalWrite(LD2_pin, LOW);
+    digitalWrite(LD3_pin, LOW);
+    digitalWrite(LD4_pin, LOW);
+    delay(500);
+  }
+
+  // powerON channels
+  // i=4; 00-15 @ G3
+  // i=5; 16-31 @ G3
+  // i=6; 00-15 @ G4
+  // i=7; 16-31 @ G4
+  for (byte i = 4; i < 8; i++){
+    powerByte=turnOnK(powerByte, i);
+    powerOn(LD_pins[i], powerByte);
+    //Check current here
+    //If current not ok ==> powerByte=turnOffK(powerByte, i);
+    delay(2000);
+  }
+
+  for (byte i = 4; i < 8; i++){
+    digitalWrite(LD_pins[i],LOW);
+    delay(500);
+  }
 }
 
 // Returns a number that has all bits same as n
 // except the k'th bit which is made 0
 byte turnOffK(byte n, byte k) {
-    // k must be positive and less than 9
+    // k must be positive and less than 8
     if (k < 0 || k >= 9)
       return n;
 
     // Do & of n with a number with all set bits except
     // the k'th bit
-    return (n & ~(1 << k));
+    return (n & ~(BIT_0 << k));
     /* return (n ^ (1 << k)); //this one toggles */
 }
 
 // Returns a number that has all bits same as n
 // except the k'th bit which is made 1
 byte turnOnK(byte n, byte k) {
-    // k must be positive 0 and less than 9
+    // k must be positive 0 and less than 8
     if (k < 0 || k >= 9)
       return n;
 
     // Do & of n with a number with all set bits except
     // the k'th bit
-    return (n | (1 << k));
+    return (n | (BIT_0 << k));
 }
 
 byte checkBitK(byte n, byte k){
     if (k < 0 || k >= 9)
       return 0; //False
 
-    if ( (n & (1 << k)) != 0)
+    if ( (n & (BIT_0 << k)) != 0)
       return 1; //True
-
 }

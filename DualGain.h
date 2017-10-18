@@ -84,7 +84,7 @@ byte turnOnK(byte n, byte k);
 //For turning on and off the channels
 void powerOff(void);
 void powerOn(byte ledPin, byte chanInfo);
-void powerOnGroup(byte powerByte);
+byte powerOnGroup(byte powerByte);
 
 byte turnOffK(byte n, byte k);
 byte turnOnK(byte n, byte k);
