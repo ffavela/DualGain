@@ -463,8 +463,8 @@ byte turnOffK(byte n, byte k) {
 
     // Do & of n with a number with all set bits except
     // the k'th bit
-    return (n & ~(BIT_0 << k));
-    /* return (n ^ (1 << k)); //this one toggles */
+    return (byte) (n & ~((byte)BIT_0 << k));
+    /* return (byte) (n ^ (1 << k)); //this one toggles */
 }
 
 // Returns a number that has all bits same as n
@@ -476,13 +476,13 @@ byte turnOnK(byte n, byte k) {
 
     // Do & of n with a number with all set bits except
     // the k'th bit
-    return (n | (BIT_0 << k));
+    return (byte) (n | ((byte)BIT_0 << k));
 }
 
 byte checkBitK(byte n, byte k){
     if (k < 0 || k >= 9)
-      return 0; //False
+      return (byte) 0; //False
 
-    if ( (n & (BIT_0 << k)) != 0)
-      return 1; //True
+    if ( (n & ((byte)BIT_0 << k)) != 0)
+      return (byte) 1; //True
 }
