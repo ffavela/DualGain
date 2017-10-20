@@ -114,10 +114,20 @@ void setup() {
 	G1gainSetup(6);
 	G2gainSetup(5);
 
+	//For testing at the future
+	// G1_PGAgain=GgainSetup(G1_PGAgain,6);
+	// G2_PGAgain=GgainSetup(G2_PGAgain,5);
+
 	analogWrite(G1VrefPwm_pin,  15);
 	analogWrite(G2VrefPwm_pin,  49);
 	analogWrite(G1G2_VHpwm_pin, 77);
 	analogWrite(G1G2_VLpwm_pin, 77);
+
+	//The analogWrite should be replaced by setDutyCycle
+	// setDutyCycle(G1VrefPwm_pin,5);//   15/255*100 ~ 5%
+	// setDutyCycle(G2VrefPwm_pin,19);//  49/255*100 ~ 19%
+	// setDutyCycle(G1G2_VHpwm_pin,30);// 77/255*100 ~ 30%
+	// setDutyCycle(G1G2_VLpwm_pin,30);// 77/255*100 ~ 30%
 
 // setup per primo test della card - sarà sostituito con la lettura della EEPROM
 	// Zload_50ohm = false;  // FORSE A BASSO LIVELLO NON SERVE
@@ -166,5 +176,4 @@ void loop() {
 		digitalWrite(LD6_pin, LOW);
 		}
 	delay(5);
-
 }
