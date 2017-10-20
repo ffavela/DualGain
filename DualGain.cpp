@@ -325,9 +325,9 @@ void releaseBlink(byte ledPin, byte *releaseArr){
   //Blinking the major release
   for (i=0;i<majorRel;i++){
     digitalWrite(ledPin, HIGH);
-    delay(400);
+    delay(100);
     digitalWrite(ledPin, LOW);
-    delay(400);
+    delay(500);
   }
 
   // delay(400);
@@ -472,6 +472,23 @@ byte powerOnGroup(byte powerByte){
   // i=1; 16-31 @ G1
   // i=2; 00-15 @ G2
   // i=3; 16-31 @ G2
+
+  // // powerByte=0b00000000
+  // powerByte=turnOnK(powerByte, 0);//G1
+  // powerOn(LD_pins[0], powerByte);
+  // // powerByte=0b00000001
+
+  // // powerByte=turnOnK(powerByte, 1);
+  // // powerOn(LD_pins[1], powerByte);
+  // // powerByte=0b00000011
+
+  // powerByte=turnOnK(powerByte, 4);//G3
+  // // powerByte=0b00010001
+  // powerOn(LD_pins[4], powerByte);
+  // powerByte=turnOnK(powerByte, 5);
+  // powerOn(LD_pins[5], powerByte);
+
+
   for (byte i = 0; i < 4; i++){
     powerByte=turnOnK(powerByte, i);
     powerOn(LD_pins[i], powerByte);
@@ -556,7 +573,7 @@ byte getAnalogValue(byte percentage){
   if (percentage > 100)
     percentage=100;
   float frac = (float)percentage/100.0;
-  return (byte) (frac*255);
+  return (byte) round(frac*255);
 }
 
 void setDutyCycle(byte G_pin, byte percentage){

@@ -11,8 +11,8 @@
 
 #include <Wire.h>
 #include "DualGain.h"
-byte release = 3;
-byte releaseArr[2]={1,0};
+byte release = 4;
+byte releaseArr[2]={4,0};
 
 byte LD1_pin =  7;
 byte LD2_pin =  8;
@@ -20,9 +20,11 @@ byte LD3_pin =  9;
 byte LD4_pin = 10;
 byte LD5_pin = 13;
 
+byte rstSlave1_pin=3;
+byte rstSlave2_pin=4;
 
 void setup() {
-	Wire.begin();
+        Wire.begin();
 	delay(5);
 
 	pinMode(LD1_pin, OUTPUT);
@@ -31,32 +33,42 @@ void setup() {
 	pinMode(LD4_pin, OUTPUT);
 	pinMode(LD5_pin, OUTPUT);
 
+	pinMode(rstSlave1_pin, INPUT);
+	pinMode(rstSlave2_pin, INPUT);
+
+	//Blinking the release version
+	releaseBlink(LD5_pin,releaseArr);
+
+	// digitalWrite(rstSlave1_pin, HIGH);
+	// digitalWrite(rstSlave2_pin, HIGH);
+
+	// digitalWrite(rstSlave1_pin, LOW);
+	// digitalWrite(rstSlave2_pin, LOW);
+
+	// delay(500);
+
+	// digitalWrite(rstSlave1_pin, HIGH);
+	// digitalWrite(rstSlave2_pin, HIGH);
+
+	// delay(3000);
+
 	// powerOFF all channels
 	Wire.beginTransmission(0x20);	// "0x20 perche il chip è di tipo "PCF8574" comincia la trasmissione con il PRIMO PCF8574 codificato con 0x38, il secondo sarà.....?
 	Wire.write((byte)0b11111111);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 
-	/* for(byte i=1; i<=release; i++) { */
-	/* 	digitalWrite(LD5_pin, HIGH); */
-	/* 	delay(100); */
-	/* 	digitalWrite(LD5_pin, LOW); */
-	/* 	delay(500); */
-	/* } */
-
-  //Blinking the release version
-  releaseBlink(LD5_pin,releaseArr);
 
 	// start powerON sequence channels 00-31 @ G1/G2
 	digitalWrite(LD1_pin, HIGH);
 	digitalWrite(LD2_pin, HIGH);
 	digitalWrite(LD3_pin, HIGH);
 	digitalWrite(LD4_pin, HIGH);
-	delay(100);
+	delay(500);
 	digitalWrite(LD1_pin, LOW);
 	digitalWrite(LD2_pin, LOW);
 	digitalWrite(LD3_pin, LOW);
 	digitalWrite(LD4_pin, LOW);
-	delay(900);
+	delay(500);
 
 
 	// powerON channels 00-15 @ G1
@@ -64,33 +76,33 @@ void setup() {
 	Wire.write((byte)0b11111110);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 	digitalWrite(LD4_pin, HIGH);
-	delay(2000);
+	delay(1000);
 
 	// powerON channels 16-31 @ G1
 	Wire.beginTransmission(0x20);	// "0x20 perche il chip è di tipo "PCF8574" comincia la trasmissione con il PRIMO PCF8574 codificato con 0x38, il secondo sarà.....?
 	Wire.write((byte)0b11111100);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 	digitalWrite(LD3_pin, HIGH);
-	delay(2000);
+	delay(1000);
 
 	// powerON channels 00-15 @ G2
 	Wire.beginTransmission(0x20);	// "0x20 perche il chip è di tipo "PCF8574" comincia la trasmissione con il PRIMO PCF8574 codificato con 0x38, il secondo sarà.....?
 	Wire.write((byte)0b11111000);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 	digitalWrite(LD2_pin, HIGH);
-	delay(2000);
+	delay(1000);
 
 	// powerON channels 16-31 @ G2
 	Wire.beginTransmission(0x20);	// "0x20 perche il chip è di tipo "PCF8574" comincia la trasmissione con il PRIMO PCF8574 codificato con 0x38, il secondo sarà.....?
 	Wire.write((byte)0b11110000);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 	digitalWrite(LD1_pin, HIGH);
-	delay(2000);
+	delay(1000);
 
 	digitalWrite(LD1_pin, LOW);
-  digitalWrite(LD2_pin, LOW);
-  digitalWrite(LD3_pin, LOW);
-  digitalWrite(LD4_pin, LOW);
+	digitalWrite(LD2_pin, LOW);
+	digitalWrite(LD3_pin, LOW);
+	digitalWrite(LD4_pin, LOW);
  	delay(500);
 
 
@@ -114,28 +126,28 @@ void setup() {
 	Wire.write((byte)0b11100000);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 	digitalWrite(LD4_pin, HIGH);
-	delay(2000);
+	delay(1000);
 
 	// powerON channels 16-31 @ G3
 	Wire.beginTransmission(0x20);	// "0x20 perche il chip è di tipo "PCF8574" comincia la trasmissione con il PRIMO PCF8574 codificato con 0x38, il secondo sarà.....?
 	Wire.write((byte)0b11000000);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 	digitalWrite(LD3_pin, HIGH);
-	delay(2000);
+	delay(1000);
 
 	// powerON channels 00-15 @ G4
 	Wire.beginTransmission(0x20);	// "0x20 perche il chip è di tipo "PCF8574" comincia la trasmissione con il PRIMO PCF8574 codificato con 0x38, il secondo sarà.....?
 	Wire.write((byte)0b10000000);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 	digitalWrite(LD2_pin, HIGH);
-	delay(2000);
+	delay(1000);
 
 	// powerON channels 16-31 @ G4
 	Wire.beginTransmission(0x20);	// "0x20 perche il chip è di tipo "PCF8574" comincia la trasmissione con il PRIMO PCF8574 codificato con 0x38, il secondo sarà.....?
 	Wire.write((byte)0b00000000);	// invio un byte - il PGA è in powerOFF se il livello è alto
 	Wire.endTransmission();
 	digitalWrite(LD1_pin, HIGH);
-	delay(2000);
+	delay(1000);
 
 
   digitalWrite(LD1_pin, LOW);
@@ -147,10 +159,16 @@ void setup() {
 
 void loop() {
 
-	digitalWrite(LD5_pin, HIGH);
-	delay(50);
-	digitalWrite(LD5_pin, LOW);
-	delay(1950);
+	digitalWrite(LD1_pin, HIGH);
+	digitalWrite(LD2_pin, HIGH);
+	digitalWrite(LD3_pin, HIGH);
+	digitalWrite(LD4_pin, HIGH);
+	delay(25);
+	digitalWrite(LD1_pin, LOW);
+	digitalWrite(LD2_pin, LOW);
+	digitalWrite(LD3_pin, LOW);
+	digitalWrite(LD4_pin, LOW);
+	delay(1975);
 }
 
 

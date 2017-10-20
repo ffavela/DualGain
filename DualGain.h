@@ -7,8 +7,8 @@
 
 #include "Arduino.h"
 #include <EEPROM.h>
-#include<math.h>
-#include<Wire.h>
+#include <math.h>
+#include <Wire.h>
 
 #define BIT_0  1   // 0000 0001
 #define BIT_1  2   // 0000 0010
@@ -19,11 +19,12 @@
 #define BIT_6  64  // 0100 0000
 #define BIT_7  128 // 1000 0000
 
+//Setup functions
 void setPwmFrequency(int pin, int divisor);
 
 //Writting functions
-void G1gainSetup(byte G1code);
-void G2gainSetup(byte G2code);
+void  G1gainSetup(byte G1code);
+void  G2gainSetup(byte G2code);
 float GgainSetup(float G_PGAgain, byte G2code); //New one
 
 void G1_VosSetup(float G1_Vos);
@@ -34,7 +35,7 @@ void VclampNegSet(unsigned int VclampNeg);
 //Communication functions
 void serialEvent(void);
 
-//...more writting functions
+//service  functions
 void setShdn(void);
 
 void releaseBlink(byte ledPin, byte *releaseArr);

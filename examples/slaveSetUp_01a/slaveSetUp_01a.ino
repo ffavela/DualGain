@@ -118,14 +118,14 @@ void setup() {
 	// G1_PGAgain=GgainSetup(G1_PGAgain,6);
 	// G2_PGAgain=GgainSetup(G2_PGAgain,5);
 
-	analogWrite(G1VrefPwm_pin,  15);
-	analogWrite(G2VrefPwm_pin,  49);
+	analogWrite(G1VrefPwm_pin,  14);
+	analogWrite(G2VrefPwm_pin,  23);
 	analogWrite(G1G2_VHpwm_pin, 77);
 	analogWrite(G1G2_VLpwm_pin, 77);
 
 	//The analogWrite should be replaced by setDutyCycle
-	// setDutyCycle(G1VrefPwm_pin,5);//   15/255*100 ~ 5%
-	// setDutyCycle(G2VrefPwm_pin,19);//  49/255*100 ~ 19%
+	// setDutyCycle(G1VrefPwm_pin,5);//   15/255*100 ~ 6%
+	// setDutyCycle(G2VrefPwm_pin,19);//  49/255*100 ~ 20%
 	// setDutyCycle(G1G2_VHpwm_pin,30);// 77/255*100 ~ 30%
 	// setDutyCycle(G1G2_VLpwm_pin,30);// 77/255*100 ~ 30%
 
