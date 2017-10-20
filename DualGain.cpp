@@ -173,6 +173,70 @@ void G2gainSetup(byte G2code) {
 	// Serial.println(G2code);
 }
 
+float GgainSetup(float G_PGAgain, byte G2code) {
+  byte G1b0_pin 		  = 2;
+  byte G1b1_pin		  = 4;
+  byte G1b2_pin 		  = 5;
+  byte G2b0_pin 		  = 6;
+  byte G2b1_pin 		  = 7;
+  byte G2b2_pin 		  = 8;
+  byte G1VrefPwm_pin    = 3;
+  byte G2VrefPwm_pin	  = 9;
+  byte G1G2_VHpwm_pin   = 10;
+  byte G1G2_VLpwm_pin   = 11;
+  byte LD6_pin		  = 13;
+
+	switch (G2code) {
+		case 0:
+			G_PGAgain = 0.08;  // serve per il calcolo di Vref=G1_Vos/(1+G2_PGAgain)
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, LOW);
+			break;
+		case 1:
+			G_PGAgain = 0.16;
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, HIGH);
+			break;
+		case 2:
+			G_PGAgain = 0.32;
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, HIGH); digitalWrite(G2b0_pin, LOW);
+			break;
+		case 3:
+			G_PGAgain = 0.63;
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, HIGH); digitalWrite(G2b0_pin, HIGH);
+			break;
+		case 4:
+			G_PGAgain = 1.26;
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, HIGH); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, LOW);
+			break;
+		case 5:
+			G_PGAgain = 2.52;
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, HIGH); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, HIGH);
+			break;
+		case 6:
+			G_PGAgain = 5.01;
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, HIGH); digitalWrite(G2b1_pin, HIGH); digitalWrite(G2b0_pin, LOW);
+			break;
+		case 7:
+			G_PGAgain = 10;
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, HIGH); digitalWrite(G2b1_pin, HIGH); digitalWrite(G2b0_pin, HIGH);
+			break;
+		default:
+			G_PGAgain = 0.08;
+			// G2_VosSetup(G2_Vos);
+			digitalWrite(G2b2_pin, LOW); digitalWrite(G2b1_pin, LOW); digitalWrite(G2b0_pin, LOW);
+	}
+	// EEPROM.write(G2code_addr, G2code);
+	// Serial.print("memorizzazione di G2code = ");
+	// Serial.println(G2code);
+	return G_PGAgain;
+}
 
 // void G1_VosSetup(float G1_Vos) {
 // 	G1_Vref = G1_Vos/(1+G1_PGAgain);
@@ -485,4 +549,17 @@ byte checkBitK(byte n, byte k){
 
     if ( (n & ((byte)BIT_0 << k)) != 0)
       return (byte) 1; //True
+}
+
+//Values have to be integers between 0 and 100
+byte getAnalogValue(byte percentage){
+  if (percentage > 100)
+    percentage=100;
+  float frac = (float)percentage/100.0;
+  return (byte) (frac*255);
+}
+
+void setDutyCycle(byte G_pin, byte percentage){
+  byte analogVal=getAnalogValue(percentage);
+  analogWrite(G_pin, analogVal);
 }

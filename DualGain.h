@@ -10,13 +10,6 @@
 #include<math.h>
 #include<Wire.h>
 
-#define SHIFT 3 //EEPROM shift first 3 bytes are for ID
-//first a char, either M or S (for master or slave), then and int (2
-//bytes on the arduino uno)
-
-//NOTE: IT IS IMPORTANT TO NOTICE THAT AN INT MAY NEED MORE BYTES ON
-//OTHER PLATFORMS, FOR EXAMPLE ON AN ARDUINO DUE AN INT IS 4 BYTES!!
-
 #define BIT_0  1   // 0000 0001
 #define BIT_1  2   // 0000 0010
 #define BIT_2  4   // 0000 0100
@@ -31,6 +24,8 @@ void setPwmFrequency(int pin, int divisor);
 //Writting functions
 void G1gainSetup(byte G1code);
 void G2gainSetup(byte G2code);
+float GgainSetup(float G_PGAgain, byte G2code); //New one
+
 void G1_VosSetup(float G1_Vos);
 void G2_VosSetup(float G2_Vos);
 void VclampPosSetup(unsigned int VclampPos);
@@ -54,9 +49,18 @@ struct SlaveStruct {
 };
 
 struct IDStruct{
-  char typeID;
-  int numberID;
+  char typeID;// either 'M' or 'S' for master or slave
+  int numberID;// the number of master or slave
+  int serialID;// the serial board ID, identical to the numberID of a
+	       // master
 };
+
+#define SHIFT 5 //EEPROM shift first 5 bytes are for ID
+//first a char, either M or S (for master or slave), then and int (2
+//bytes on the arduino uno) and after another int.
+
+//NOTE: IT IS IMPORTANT TO NOTICE THAT AN INT MAY NEED MORE BYTES ON
+//OTHER PLATFORMS, FOR EXAMPLE ON AN ARDUINO DUE AN INT IS 4 BYTES!!
 
 void getEEPROMStructID( IDStruct *idStruct);
 void writeEEPROMStructID( IDStruct *idStruct );
@@ -89,3 +93,6 @@ byte powerOnGroup(byte powerByte);
 byte turnOffK(byte n, byte k);
 byte turnOnK(byte n, byte k);
 byte checkBitK(byte n, byte k);
+
+byte getAnalogValue(byte percentage);
+void setDutyCycle(byte G_pin, byte percentage);
